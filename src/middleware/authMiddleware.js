@@ -27,4 +27,25 @@ const verifyToken = (req, res, next) => {
   }
 };
 
-export { verifyToken };
+const verifyAdmin = (req, res, next) => {
+  verifyToken(req, res, () => {
+    if (req.user.role !== 'Admin') return res.status(403).json({ message: 'Access denied.' });
+    next();
+  });
+};
+
+const verifyDesigner = (req, res, next) => {
+  verifyToken(req, res, () => {
+    if (req.user.role !== 'Designer') return res.status(403).json({ message: 'Access denied.' });
+    next();
+  });
+};
+
+const verifyClient = (req, res, next) => {
+  verifyToken(req, res, () => {
+    if (req.user.role !== 'Client') return res.status(403).json({ message: 'Access denied.' });
+    next();
+  });
+};
+
+export { verifyToken, verifyAdmin ,verifyDesigner, verifyClient };
