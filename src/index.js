@@ -1,26 +1,38 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import http from 'http';
+import { Server } from 'socket.io'; 
+
 import dbConnect from './config/dbConnect.js';
 import authRoute from './routes/authRoute.js';
 import userRoute from './routes/userRoutes.js';
 import briefRoute from './routes/briefRoute.js';
 import designRoute from './routes/designRoute.js';
+import { handleSocketConnection } from './controllers/chatController.js'; 
 
 dotenv.config();
 dbConnect();
 
 const app = express();
+const server = http.createServer(app); 
+const io = new Server(server, { 
+  cors: {
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST'],
+    credentials: true,
+  },
+});
 
 // CORS Configuration
 const corsOptions = {
-  origin: 'http://localhost:5174', // Allow requests from your React app
-  methods: 'GET,POST', // You can restrict methods as needed
-  allowedHeaders: 'Content-Type, authorization', // Allow headers
-  credentials: true, // Allow credentials (cookies, authorization headers)
+  origin: 'http://localhost:5173',
+  methods: 'GET,POST,DELETE,PUT',
+  allowedHeaders: 'Content-Type, authorization',
+  credentials: true, 
 };
 
-app.use(cors({ origin: 'http://localhost:5173' }));
+app.use(cors(corsOptions));
 
 // Middleware
 app.use(express.json());
@@ -35,9 +47,14 @@ app.use("/api/users", userRoute);
 app.use("/api/brief", briefRoute);
 app.use("/api/design", designRoute);
 
+// Socket.IO Setup with Controller
+io.on('connection', (socket) => {
+  handleSocketConnection(socket, io);
+});
+
 // Start the server
 const PORT = process.env.PORT || 5001;
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

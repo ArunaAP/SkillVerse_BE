@@ -17,15 +17,17 @@ const verifyToken = (req, res, next) => {
       // Verify the token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       req.user = decoded; // Attach the decoded user payload to the request object
-      console.log("The decoded user:", req.user);
+      console.log("Decoded token:", decoded); // Debugging
       next(); // Proceed to the next middleware or route handler
     } catch (err) {
+      console.error("Token verification failed:", err.message); // Debugging
       return res.status(400).json({ message: "Token is not valid" });
     }
   } else {
     return res.status(401).json({ message: "Authorization header is missing or malformed" });
   }
 };
+
 
 const verifyAdmin = (req, res, next) => {
   verifyToken(req, res, () => {
