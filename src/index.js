@@ -9,6 +9,7 @@ import authRoute from './routes/authRoute.js';
 import userRoute from './routes/userRoutes.js';
 import briefRoute from './routes/briefRoute.js';
 import designRoute from './routes/designRoute.js';
+import searchRoutes from './routes/searchRoute.js';
 import { handleSocketConnection } from './controllers/chatController.js'; 
 
 dotenv.config();
@@ -46,6 +47,7 @@ app.use("/api/auth/", authRoute);
 app.use("/api/users", userRoute);
 app.use("/api/brief", briefRoute);
 app.use("/api/design", designRoute);
+app.use('/api', searchRoutes);
 
 // Socket.IO Setup with Controller
 io.on('connection', (socket) => {

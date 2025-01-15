@@ -7,6 +7,7 @@ const DesignSchema = new mongoose.Schema({
   designer: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // Correctly reference the User model
   image: { type: String, required: true }, // URL or path to the design file
   likes: { type: Number, default: 0 }, // Number of likes
+  likedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
 }, { timestamps: true });
 
 const Design = mongoose.model('Design', DesignSchema);

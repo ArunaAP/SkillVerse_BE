@@ -1,4 +1,5 @@
 import Design from '../models/designModel.js';
+import jwt from 'jsonwebtoken';
 
 export const getAllDesigns = async (req, res) => {
     try {
@@ -25,16 +26,25 @@ export const addDesign = async (req, res) => {
 
 export const likeDesign = async (req, res) => {
   try {
+    // Decode token to get the user ID
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET); // Decode the token using JWT_SECRET
+    req.user = decoded;  // This will contain user info, including the user ID
+
     const { id } = req.params; // Design ID
     const design = await Design.findById(id);
 
+    if (!design) {
+      return res.status(404).json({ message: 'Design not found' });
+    }
+
     if (!design.likedBy.includes(req.user.id)) {
-      design.likedBy.push(req.user.id);
-      design.likes += 1;
+      design.likedBy.push(req.user.id);  // Add user ID to likedBy array
+      design.likes += 1;  // Increment like count
     }
 
     await design.save();
-    res.status(200).json(design);
+    res.status(200).json(design);  // Return updated design with new like count
   } catch (error) {
     res.status(500).json({ message: 'Failed to like design.' });
   }
