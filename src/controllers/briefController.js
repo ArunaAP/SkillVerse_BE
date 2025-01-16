@@ -77,3 +77,18 @@ export const getBriefById = async (req, res) => {
   }
 };
 
+export const getRecentBriefs = async (req, res) => {
+  try {
+    // Fetch the 5 most recent briefs, sorted by creation date in descending order
+    const recentBriefs = await Brief.find()
+      .sort({ createdAt: -1 }) // Sort by createdAt in descending order
+      .limit(3); // Limit to 5 recent briefs
+
+    res.status(200).json(recentBriefs);
+  } catch (error) {
+    console.error("Error fetching recent briefs:", error.message); // Log the error for debugging
+    res.status(500).json({ message: "Failed to fetch recent briefs.", error: error.message });
+  }
+};
+
+
