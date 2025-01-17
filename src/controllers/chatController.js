@@ -28,6 +28,7 @@ export const handleSocketConnection = (socket, io) => {
         timestamp: new Date(),
       });
       await newMessage.save();
+      console.log(newMessage);
 
       // Broadcast message to the room
       io.to(chatId).emit("newMessage", newMessage);
