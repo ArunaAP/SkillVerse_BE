@@ -8,6 +8,7 @@ export const handleSocketConnection = (socket, io) => {
     const chatId = `${clientId}-${designerId}`;
     socket.join(chatId);
     console.log(`User joined chat room ${chatId}`);
+    console.log(`cleintId: ${clientId} designerId: ${designerId}`);
 
     // Fetch previous messages
     try {
@@ -47,4 +48,27 @@ export const handleSocketConnection = (socket, io) => {
   socket.on("disconnect", () => {
     console.log(`User disconnected: ${socket.id}`);
   });
+};
+
+export const getUserChats = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Find unique chat rooms involving the user
+    const chats = await Message.aggregate([
+      { $match: { chatId: { $regex: userId } } },
+      { $sort: { timestamp: -1 } },
+      {
+        $group: {
+          _id: "$chatId",
+          lastMessage: { $first: "$$ROOT" },
+        },
+      },
+    ]);
+
+    res.status(200).json(chats);
+  } catch (error) {
+    console.error("Error fetching user chats:", error);
+    res.status(500).json({ message: "Failed to fetch chats." });
+  }
 };
