@@ -11,6 +11,8 @@ import briefRoute from "./routes/briefRoute.js";
 import designRoute from "./routes/designRoute.js";
 import searchRoutes from "./routes/searchRoute.js";
 import chatRoute from "./routes/chatRoute.js";
+import threadRoutes from "./routes/threadRoute.js";
+import commentRoutes from "./routes/commentRoute.js";
 import { handleSocketConnection } from "./controllers/chatController.js";
 
 dotenv.config();
@@ -50,6 +52,8 @@ app.use("/api/brief", briefRoute);
 app.use("/api/design", designRoute);
 app.use("/api", searchRoutes);
 app.use("/api/chats", chatRoute);
+app.use("/api/threads", threadRoutes);
+app.use("/api/comments", commentRoutes);
 
 // Socket.IO Setup with Controller
 io.on("connection", (socket) => {
