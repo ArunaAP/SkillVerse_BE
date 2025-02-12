@@ -66,7 +66,10 @@ export const getUserChats = async (req, res) => {
       },
     ]);
 
-    res.status(200).json(chats);
+    // Extract chat IDs
+    const chatIds = chats.map((chat) => chat._id);
+
+    res.status(200).json({ chats, chatIds }); // ✅ Send chatIds along with chat data
   } catch (error) {
     console.error("Error fetching user chats:", error);
     res.status(500).json({ message: "Failed to fetch chats." });

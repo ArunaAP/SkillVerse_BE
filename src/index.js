@@ -20,30 +20,43 @@ dbConnect();
 
 const app = express();
 const server = http.createServer(app);
+
+const allowedOrigins = [
+  "https://my-frontend-app-e2jj.onrender.com",
+  "http://localhost:5173",
+];
+
+const corsOptions = {
+  origin: [
+    "https://my-frontend-app-e2jj.onrender.com",
+    "https://my-frontend-app-e2jj.onrender.com/",
+    "http://localhost:5173",
+  ],
+  methods: ["GET", "POST", "DELETE", "PUT", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+};
+
+// Apply CORS before routes
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
+
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: [
+      "https://my-frontend-app-e2jj.onrender.com",
+      "http://localhost:5173",
+    ],
     methods: ["GET", "POST"],
     credentials: true,
   },
 });
 
-// CORS Configuration
-const corsOptions = {
-  origin: "http://localhost:5173",
-  methods: "GET,POST,DELETE,PUT",
-  allowedHeaders: "Content-Type, authorization",
-  credentials: true,
-};
-
-app.use(cors(corsOptions));
-
-// Middleware
-app.use(express.json());
+app.use(express.json()); // Middleware
 
 // Routes
 app.get("/", (req, res) => {
-  res.send("Aa patiyo khmda..!");
+  res.send("Backend is running!");
 });
 
 app.use("/api/auth/", authRoute);
@@ -55,14 +68,14 @@ app.use("/api/chats", chatRoute);
 app.use("/api/threads", threadRoutes);
 app.use("/api/comments", commentRoutes);
 
-// Socket.IO Setup with Controller
+// ✅ FIXED: Ensure Socket.IO properly handles connections
 io.on("connection", (socket) => {
+  console.log("A user connected:", socket.id); // Debugging
   handleSocketConnection(socket, io);
 });
 
 // Start the server
 const PORT = process.env.PORT || 5001;
-
 server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`🚀 Server is running on port ${PORT}`);
 });
