@@ -22,16 +22,12 @@ const app = express();
 const server = http.createServer(app);
 
 const allowedOrigins = [
-  "https://my-frontend-app-e2jj.onrender.com",
+  "https://skillverse-wnfl.onrender.com",
   "http://localhost:5173",
 ];
 
 const corsOptions = {
-  origin: [
-    "https://my-frontend-app-e2jj.onrender.com",
-    "https://my-frontend-app-e2jj.onrender.com/",
-    "http://localhost:5173",
-  ],
+  origin: allowedOrigins,
   methods: ["GET", "POST", "DELETE", "PUT", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
@@ -43,10 +39,7 @@ app.options("*", cors(corsOptions));
 
 const io = new Server(server, {
   cors: {
-    origin: [
-      "https://my-frontend-app-e2jj.onrender.com",
-      "http://localhost:5173",
-    ],
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
     credentials: true,
   },
