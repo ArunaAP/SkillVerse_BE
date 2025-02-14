@@ -69,3 +69,27 @@ export const getUserChats = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch chats." });
   }
 };
+
+export const checkExistingChat = async (req, res) => {
+  try {
+    const { clientId, designerId } = req.params;
+
+    // Generate chatId in the same format as it was stored
+    const chatId1 = `${clientId}-${designerId}`;
+    const chatId2 = `${designerId}-${clientId}`; // If order isn't fixed
+
+    // Check if a chat exists between the client and designer
+    const existingChat = await Message.findOne({
+      chatId: { $in: [chatId1, chatId2] }, // Check both possible orders
+    });
+
+    if (existingChat) {
+      return res.status(200).json({ chatExists: true, existingChat });
+    }
+
+    res.status(200).json({ chatExists: false });
+  } catch (error) {
+    console.error("Error checking existing chat:", error);
+    res.status(500).json({ message: "Failed to check chat existence." });
+  }
+};
