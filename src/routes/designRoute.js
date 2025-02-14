@@ -15,8 +15,8 @@ import {
 const router = express.Router();
 
 router.get("/", getAllDesigns);
-router.post("/", addDesign);
-router.post("/:id/like", likeDesign);
+router.post("/", verifyDesigner, addDesign);
+router.post("/:id/like", verifyToken, likeDesign);
 router.get("/:id", getDesignById);
 
 export default router;
