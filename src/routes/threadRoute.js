@@ -10,9 +10,9 @@ import { verifyToken } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/", createThread);
+router.post("/", verifyToken, createThread);
 router.get("/", getAllThreads);
 router.get("/:id", getThreadById);
-router.delete("/:id", deleteThread);
+router.delete("/:id", verifyToken, deleteThread);
 
 export default router;

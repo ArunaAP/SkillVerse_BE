@@ -11,7 +11,7 @@ import { verifyToken, verifyAdmin } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/", addBrief);
+router.post("/", verifyToken, addBrief);
 router.put("/:id", updateBrief);
 router.delete("/:id", deleteBrief);
 router.get("/recent", getRecentBriefs);
