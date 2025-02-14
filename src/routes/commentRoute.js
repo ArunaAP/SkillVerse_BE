@@ -8,7 +8,7 @@ import { verifyToken } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/:id", addComment);
+router.post("/:id", verifyToken, addComment);
 router.get("/:id", getCommentsByThread);
 
 export default router;
